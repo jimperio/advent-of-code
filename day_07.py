@@ -9,6 +9,17 @@ def solve(input):
       graph.add_edge(arg, target)
     ops[target] = (op, args)
   sorted_nodes = graph.topological_sort()
+
+  node_values = resolve_node_values(sorted_nodes, ops)
+  print 'Part 1 signal on `a` is %s' % node_values['a']
+
+  # Override `b`
+  ops['b'] = 'SET', [node_values['a']]
+  new_node_values = resolve_node_values(sorted_nodes, ops)
+  print 'Part 2 signal on `a` is %s' % new_node_values['a']
+
+
+def resolve_node_values(sorted_nodes, ops):
   known_nodes = {}
   def _get_value(node_or_result):
     if type(node_or_result) != int:
@@ -18,7 +29,7 @@ def solve(input):
     op, args = ops[node]
     node_or_result = operators[op](map(_get_value, args))
     known_nodes[node] = _get_value(node_or_result)
-  print known_nodes['a']
+  return known_nodes
 
 
 operators = {
