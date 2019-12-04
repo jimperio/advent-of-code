@@ -2,44 +2,44 @@ import itertools
 
 
 def solve(input):
-  all_places, roads = parse_input(input)
-  min_distance = None
-  max_distance = None
-  for route in itertools.permutations(all_places):
-    distance = get_route_distance(route, roads)
-    if distance is None:
-      continue
-    if min_distance is None or distance < min_distance:
-      min_distance = distance
-    if max_distance is None or distance > max_distance:
-      max_distance = distance
-  print min_distance
-  print max_distance
+    all_places, roads = parse_input(input)
+    min_distance = None
+    max_distance = None
+    for route in itertools.permutations(all_places):
+        distance = get_route_distance(route, roads)
+        if distance is None:
+            continue
+        if min_distance is None or distance < min_distance:
+            min_distance = distance
+        if max_distance is None or distance > max_distance:
+            max_distance = distance
+    print min_distance
+    print max_distance
 
 
 def get_route_distance(route, roads):
-  i = 2
-  distance = 0
-  while i < len(route) + 1:
-    key = tuple(sorted(route[i-2:i]))
-    if key not in roads:
-      return None
-    distance += roads[key]
-    i += 1
-  return distance
+    i = 2
+    distance = 0
+    while i < len(route) + 1:
+        key = tuple(sorted(route[i - 2 : i]))
+        if key not in roads:
+            return None
+        distance += roads[key]
+        i += 1
+    return distance
 
 
 def parse_input(input):
-  all_places = set()
-  roads = {}
-  for spec in input.split('\n'):
-    places, distance = spec.split(' = ')
-    a, b = places.split(' to ')
-    all_places.add(a)
-    all_places.add(b)
-    road_key = tuple(sorted((a, b)))
-    roads[road_key] = int(distance)
-  return all_places, roads
+    all_places = set()
+    roads = {}
+    for spec in input.split("\n"):
+        places, distance = spec.split(" = ")
+        a, b = places.split(" to ")
+        all_places.add(a)
+        all_places.add(b)
+        road_key = tuple(sorted((a, b)))
+        roads[road_key] = int(distance)
+    return all_places, roads
 
 
 input = """AlphaCentauri to Snowdin = 66
@@ -73,4 +73,4 @@ Tristram to Arbre = 90"""
 
 
 if __name__ == "__main__":
-  solve(input)
+    solve(input)

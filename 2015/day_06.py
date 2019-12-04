@@ -1,66 +1,68 @@
 def solve(input):
-  grid = generate_grid()
-  new_grid = generate_grid()
+    grid = generate_grid()
+    new_grid = generate_grid()
 
-  for instruction in input.split('\n'):
-    command_info = parse(instruction)
-    execute_command(command_info, grid)
-    execute_command(command_info, new_grid, is_new=True)
+    for instruction in input.split("\n"):
+        command_info = parse(instruction)
+        execute_command(command_info, grid)
+        execute_command(command_info, new_grid, is_new=True)
 
-  print 'Part 1 has %i lights lit' % sum_grid(grid)
-  print 'Part 2 has total brightness %i' % sum_grid(new_grid)
+    print "Part 1 has %i lights lit" % sum_grid(grid)
+    print "Part 2 has total brightness %i" % sum_grid(new_grid)
 
 
 def parse(instruction):
-  command = get_command(instruction)
-  others = instruction[len(command):].strip().split(' ')
-  start_coords = _to_tuple(others[0])
-  end_coords = _to_tuple(others[-1])
-  return (command, start_coords, end_coords)
+    command = get_command(instruction)
+    others = instruction[len(command) :].strip().split(" ")
+    start_coords = _to_tuple(others[0])
+    end_coords = _to_tuple(others[-1])
+    return (command, start_coords, end_coords)
+
 
 def _to_tuple(coords):
-  return tuple(map(int, coords.split(',')))
+    return tuple(map(int, coords.split(",")))
 
 
 commands = {
-  "turn off": lambda s: 0,
-  "turn on": lambda s: 1,
-  "toggle": lambda s: 0 if s else 1,
+    "turn off": lambda s: 0,
+    "turn on": lambda s: 1,
+    "toggle": lambda s: 0 if s else 1,
 }
 new_commands = {
-  "turn off": lambda s: max(s-1, 0),
-  "turn on": lambda s: s+1,
-  "toggle": lambda s: s+2,
+    "turn off": lambda s: max(s - 1, 0),
+    "turn on": lambda s: s + 1,
+    "toggle": lambda s: s + 2,
 }
 
+
 def get_command(instruction):
-  for command in commands:
-    if instruction.startswith(command):
-      return command
-  raise RuntimeError("Unsupported instruction!")
+    for command in commands:
+        if instruction.startswith(command):
+            return command
+    raise RuntimeError("Unsupported instruction!")
 
 
 def execute_command(cmd_info, grid, is_new=False):
-  cmds = new_commands if is_new else commands
-  cmd, (x_i, y_i), (x_f, y_f) = cmd_info
-  for x in xrange(x_i, x_f+1):
-    for y in xrange(y_i, y_f+1):
-      s = grid[x][y]
-      grid[x][y] = cmds[cmd](s)
+    cmds = new_commands if is_new else commands
+    cmd, (x_i, y_i), (x_f, y_f) = cmd_info
+    for x in xrange(x_i, x_f + 1):
+        for y in xrange(y_i, y_f + 1):
+            s = grid[x][y]
+            grid[x][y] = cmds[cmd](s)
 
 
 def sum_grid(grid):
-  return sum(map(sum, grid))
+    return sum(map(sum, grid))
 
 
 def generate_grid(x=999, y=999):
-  grid = []
-  for i in xrange(0, x+1):
-    row = []
-    for j in xrange(0, y+1):
-      row.append(0)
-    grid.append(row)
-  return grid
+    grid = []
+    for i in xrange(0, x + 1):
+        row = []
+        for j in xrange(0, y + 1):
+            row.append(0)
+        grid.append(row)
+    return grid
 
 
 input = """turn off 660,55 through 986,197
@@ -366,4 +368,4 @@ toggle 296,687 through 906,775"""
 
 
 if __name__ == "__main__":
-  solve(input)
+    solve(input)

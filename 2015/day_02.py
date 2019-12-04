@@ -1,30 +1,30 @@
 def solve(input):
-  total_paper_area = total_ribbon_length = 0
-  for dimensions in input.split('\n'):
-    if not dimensions:
-      continue
-    sorted_tuple = to_sorted_tuple(dimensions)
-    total_paper_area += to_paper_area(sorted_tuple)
-    total_ribbon_length += to_ribbon_length(sorted_tuple)
+    total_paper_area = total_ribbon_length = 0
+    for dimensions in input.split("\n"):
+        if not dimensions:
+            continue
+        sorted_tuple = to_sorted_tuple(dimensions)
+        total_paper_area += to_paper_area(sorted_tuple)
+        total_ribbon_length += to_ribbon_length(sorted_tuple)
 
-  print 'Total wrapping paper area: %s' % total_paper_area
-  print 'Total ribbon length: %s' % total_ribbon_length
+    print "Total wrapping paper area: %s" % total_paper_area
+    print "Total ribbon length: %s" % total_ribbon_length
 
 
 def to_sorted_tuple(dimensions):
-  dims = map(int, dimensions.split('x'))
-  dims.sort()
-  return tuple(dims)
+    dims = map(int, dimensions.split("x"))
+    dims.sort()
+    return tuple(dims)
 
 
 def to_paper_area(s):
-  l, w, h = s
-  return 3*l*w + 2*l*h + 2*w*h
+    l, w, h = s
+    return 3 * l * w + 2 * l * h + 2 * w * h
 
 
 def to_ribbon_length(s):
-  l, w, h = s
-  return 2*(l+w) + l*w*h
+    l, w, h = s
+    return 2 * (l + w) + l * w * h
 
 
 input = """
@@ -1032,4 +1032,4 @@ input = """
 
 
 if __name__ == "__main__":
-  solve(input)
+    solve(input)

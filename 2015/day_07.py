@@ -1,114 +1,119 @@
 def solve(input):
-  graph = Graph()
-  ops = {}
-  for spec in input.split('\n'):
-    (op, args), target = parse_spec(spec)
-    for arg in args:
-      if type(arg) == int:
-        continue
-      graph.add_edge(arg, target)
-    ops[target] = (op, args)
-  sorted_nodes = graph.topological_sort()
+    graph = Graph()
+    ops = {}
+    for spec in input.split("\n"):
+        (op, args), target = parse_spec(spec)
+        for arg in args:
+            if type(arg) == int:
+                continue
+            graph.add_edge(arg, target)
+        ops[target] = (op, args)
+    sorted_nodes = graph.topological_sort()
 
-  node_values = resolve_node_values(sorted_nodes, ops)
-  print 'Part 1 signal on `a` is %s' % node_values['a']
+    node_values = resolve_node_values(sorted_nodes, ops)
+    print "Part 1 signal on `a` is %s" % node_values["a"]
 
-  # Override `b`
-  ops['b'] = 'SET', [node_values['a']]
-  new_node_values = resolve_node_values(sorted_nodes, ops)
-  print 'Part 2 signal on `a` is %s' % new_node_values['a']
+    # Override `b`
+    ops["b"] = "SET", [node_values["a"]]
+    new_node_values = resolve_node_values(sorted_nodes, ops)
+    print "Part 2 signal on `a` is %s" % new_node_values["a"]
 
 
 def resolve_node_values(sorted_nodes, ops):
-  known_nodes = {}
-  def _get_value(node_or_result):
-    if type(node_or_result) != int:
-      node_or_result = known_nodes[node_or_result]
-    return node_or_result
-  for node in sorted_nodes:
-    op, args = ops[node]
-    node_or_result = operators[op](map(_get_value, args))
-    known_nodes[node] = _get_value(node_or_result)
-  return known_nodes
+    known_nodes = {}
+
+    def _get_value(node_or_result):
+        if type(node_or_result) != int:
+            node_or_result = known_nodes[node_or_result]
+        return node_or_result
+
+    for node in sorted_nodes:
+        op, args = ops[node]
+        node_or_result = operators[op](map(_get_value, args))
+        known_nodes[node] = _get_value(node_or_result)
+    return known_nodes
 
 
 operators = {
-  'SET': lambda a: a[0],
-  'NOT': lambda a: ~a[0],
-  'OR': lambda a: a[0] | a[1],
-  'AND': lambda a: a[0] & a[1],
-  'LSHIFT': lambda a: a[0] << a[1],
-  'RSHIFT': lambda a: a[0] >> a[1],
+    "SET": lambda a: a[0],
+    "NOT": lambda a: ~a[0],
+    "OR": lambda a: a[0] | a[1],
+    "AND": lambda a: a[0] & a[1],
+    "LSHIFT": lambda a: a[0] << a[1],
+    "RSHIFT": lambda a: a[0] >> a[1],
 }
 
+
 def parse_spec(spec):
-  op_spec, target = map(_strip, spec.split('->'))
-  op_info = parse_operation(op_spec)
-  return op_info, target
+    op_spec, target = map(_strip, spec.split("->"))
+    op_info = parse_operation(op_spec)
+    return op_info, target
 
 
 def parse_operation(op_spec):
-  for operator in operators:
-    if operator in op_spec:
-      args = map(_arg, op_spec.split(operator))
-      if not args[0]:
-        # NOT operator takes only one arg
-        args = args[1:]
-      return operator, args
-  # Let's just add a 'SET' operator for the no-op case
-  # that sets the signal directly.
-  return 'SET', [_arg(op_spec)]
+    for operator in operators:
+        if operator in op_spec:
+            args = map(_arg, op_spec.split(operator))
+            if not args[0]:
+                # NOT operator takes only one arg
+                args = args[1:]
+            return operator, args
+    # Let's just add a 'SET' operator for the no-op case
+    # that sets the signal directly.
+    return "SET", [_arg(op_spec)]
 
 
 class Graph(object):
+    def __init__(self, source={}):
+        self._graph = source
 
-  def __init__(self, source={}):
-    self._graph = source
+    def add_node(self, name):
+        if name not in self._graph:
+            self._graph[name] = set()
 
-  def add_node(self, name):
-    if name not in self._graph:
-      self._graph[name] = set()
+    def add_edge(self, indep_name, dep_name):
+        self.add_node(indep_name)
+        self.add_node(dep_name)
+        self._graph[dep_name].add(indep_name)
 
-  def add_edge(self, indep_name, dep_name):
-    self.add_node(indep_name)
-    self.add_node(dep_name)
-    self._graph[dep_name].add(indep_name)
+    def topological_sort(self):
+        sorted_nodes = []
+        ind_nodes = set()
+        for node, deps in self._graph.iteritems():
+            if not deps:
+                ind_nodes.add(node)
+        while ind_nodes:
+            n = ind_nodes.pop()
+            for node, deps in self._graph.iteritems():
+                if node in ind_nodes or node in sorted_nodes:
+                    continue
+                deps.discard(n)
+                if not deps:
+                    ind_nodes.add(node)
+            if n not in sorted_nodes:
+                sorted_nodes.append(n)
+        return sorted_nodes
 
-  def topological_sort(self):
-    sorted_nodes = []
-    ind_nodes = set()
-    for node, deps in self._graph.iteritems():
-      if not deps:
-        ind_nodes.add(node)
-    while ind_nodes:
-      n = ind_nodes.pop()
-      for node, deps in self._graph.iteritems():
-        if node in ind_nodes or node in sorted_nodes:
-          continue
-        deps.discard(n)
-        if not deps:
-          ind_nodes.add(node)
-      if n not in sorted_nodes:
-        sorted_nodes.append(n)
-    return sorted_nodes
-
-  def to_dict(self):
-    return self._graph
+    def to_dict(self):
+        return self._graph
 
 
 def _arg(s):
-  stripped = _strip(s)
-  converted = _int(stripped)
-  return stripped if converted is None else converted
+    stripped = _strip(s)
+    converted = _int(stripped)
+    return stripped if converted is None else converted
+
 
 def _int(s):
-  try:
-    return int(s)
-  except ValueError:
-    return None
+    try:
+        return int(s)
+    except ValueError:
+        return None
+
 
 def _strip(s):
-  return s.strip()
+    return s.strip()
+
 
 short_input = """123 -> x
 456 -> y
@@ -460,6 +465,5 @@ NOT hn -> ho
 he RSHIFT 5 -> hh"""
 
 
-
 if __name__ == "__main__":
-  solve(input)
+    solve(input)

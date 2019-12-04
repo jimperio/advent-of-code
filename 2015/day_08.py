@@ -1,27 +1,27 @@
 def solve(input):
-  literal_chars = 0
-  actual_chars = 0
-  encoded_chars = 0
-  for s in input.split('\n'):
-    literal_chars += len(s)
-    actual_chars += count_actual_chars(s)
-    encoded_chars += count_encoded_chars(s)
-  print "Part 1 (literal - actual): %s" % (literal_chars - actual_chars)
-  print "Part 2 (encoded - literal): %s" % (encoded_chars - literal_chars)
+    literal_chars = 0
+    actual_chars = 0
+    encoded_chars = 0
+    for s in input.split("\n"):
+        literal_chars += len(s)
+        actual_chars += count_actual_chars(s)
+        encoded_chars += count_encoded_chars(s)
+    print "Part 1 (literal - actual): %s" % (literal_chars - actual_chars)
+    print "Part 2 (encoded - literal): %s" % (encoded_chars - literal_chars)
 
 
 def count_actual_chars(s):
-  if s.startswith('"'):
-    s = s[1:]
-  if s.endswith('"'):
-    s = s[:-1]
-  return len(s.decode('string-escape'))
+    if s.startswith('"'):
+        s = s[1:]
+    if s.endswith('"'):
+        s = s[:-1]
+    return len(s.decode("string-escape"))
 
 
 def count_encoded_chars(s):
-  num_quotes = s.count('"')
-  num_backslashes = s.count('\\')
-  return len(s) + num_quotes + num_backslashes + 2
+    num_quotes = s.count('"')
+    num_backslashes = s.count("\\")
+    return len(s) + num_quotes + num_backslashes + 2
 
 
 input = r'''"azlgxdbljwygyttzkfwuxv"
@@ -327,4 +327,4 @@ input = r'''"azlgxdbljwygyttzkfwuxv"
 
 
 if __name__ == "__main__":
-  solve(input)
+    solve(input)

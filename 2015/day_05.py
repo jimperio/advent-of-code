@@ -1,73 +1,75 @@
 def solve(input):
-  new_count = 0
-  count = 0
-  for s in input.split('\n'):
-    if is_nicer(s):
-      new_count += 1
-    if is_nice(s):
-      count += 1
+    new_count = 0
+    count = 0
+    for s in input.split("\n"):
+        if is_nicer(s):
+            new_count += 1
+        if is_nice(s):
+            count += 1
 
-  print 'Found %i nice strings (old rules)' % count
-  print 'Found %i nice strings (new rules)' % new_count
+    print "Found %i nice strings (old rules)" % count
+    print "Found %i nice strings (new rules)" % new_count
 
 
 def is_nicer(s):
-  return has_repeated_pair(s) and has_repeat_with_one_letter_between(s)
+    return has_repeated_pair(s) and has_repeat_with_one_letter_between(s)
 
 
 def has_repeated_pair(s):
-  tested_pairs = set()
-  for i, c in enumerate(s):
-    if i >= len(s) - 2:
-      continue
-    test_pair = s[i:i+2]
-    if test_pair in tested_pairs:
-      continue
-    if s.count(test_pair) >= 2:
-      return True
-    tested_pairs.add(test_pair)
-  return False
+    tested_pairs = set()
+    for i, c in enumerate(s):
+        if i >= len(s) - 2:
+            continue
+        test_pair = s[i : i + 2]
+        if test_pair in tested_pairs:
+            continue
+        if s.count(test_pair) >= 2:
+            return True
+        tested_pairs.add(test_pair)
+    return False
 
 
 def has_repeat_with_one_letter_between(s):
-  for i, c in enumerate(s):
-    if i >= len(s) - 2:
-      continue
-    if c == s[i+2]:
-      return True
-  return False
+    for i, c in enumerate(s):
+        if i >= len(s) - 2:
+            continue
+        if c == s[i + 2]:
+            return True
+    return False
 
 
 def is_nice(s):
-  return not has_banned_string(s) and has_three_vowels(s) and has_repeated(s)
+    return not has_banned_string(s) and has_three_vowels(s) and has_repeated(s)
 
 
-banned_strings = set(('ab', 'cd', 'pq', 'xy'))
+banned_strings = set(("ab", "cd", "pq", "xy"))
+
 
 def has_banned_string(s):
-  for banned_string in banned_strings:
-    if banned_string in s:
-      return True
+    for banned_string in banned_strings:
+        if banned_string in s:
+            return True
 
 
-vowels = 'aeiou'
+vowels = "aeiou"
+
 
 def has_three_vowels(s):
-  vowel_count = 0
-  for vowel in vowels:
-    vowel_count += s.count(vowel)
-    if vowel_count >= 3:
-      return True
-  return False
+    vowel_count = 0
+    for vowel in vowels:
+        vowel_count += s.count(vowel)
+        if vowel_count >= 3:
+            return True
+    return False
 
 
 def has_repeated(s):
-  for i, c in enumerate(s):
-    if i == 0:
-      continue
-    if c == s[i-1]:
-      return True
-  return False
+    for i, c in enumerate(s):
+        if i == 0:
+            continue
+        if c == s[i - 1]:
+            return True
+    return False
 
 
 input = """zgsnvdmlfuplrubt
@@ -1073,4 +1075,4 @@ cqfikbgxvjmnfncy
 """
 
 if __name__ == "__main__":
-  solve(input)
+    solve(input)
